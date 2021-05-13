@@ -1,38 +1,70 @@
-"""Extract data on near-Earth objects and close approaches from CSV and JSON files.
-
-The `load_neos` function extracts NEO data from a CSV file, formatted as
-described in the project instructions, into a collection of `NearEarthObject`s.
-
-The `load_approaches` function extracts close approach data from a JSON file,
-formatted as described in the project instructions, into a collection of
-`CloseApproach` objects.
-
-The main module calls these functions with the arguments provided at the command
-line, and uses the resulting collections to build an `NEODatabase`.
-
-You'll edit this file in Task 2.
-"""
-import csv
 import json
-
+import csv
 from models import NearEarthObject, CloseApproach
+import typing
+from math import isnan
 
+#TODO: Refactor code in this file
 
-def load_neos(neo_csv_path):
+#class loader. Attributes: tuple of headers, load_csv, load_json static functions
+def load_neos(neo_csv_path) -> typing.List[NearEarthObject]:
     """Read near-Earth object information from a CSV file.
 
     :param neo_csv_path: A path to a CSV file containing data about near-Earth objects.
     :return: A collection of `NearEarthObject`s.
     """
-    # TODO: Load NEO data from the given CSV file.
-    return ()
+    neos = []
+    
+    with open(neo_csv_path) as file:
+        reader = csv.DictReader(file)
+        for line in reader:
+            curr_neo_params = {}
+
+            curr_neo_params['designation'] = line['pdes']
+            
+            if line['pha'] == 'Y':
+                curr_neo_params['hazardous'] = True
+            else:
+                curr_neo_params['hazardous'] = False
+        
+            #TODO: Change with a call to load_approaches
+            curr_neo_params['approaches'] = []
+
+            if line['name'] != '':
+                curr_neo_params['name'] = line['name']
+
+            if line['diameter'] != '':
+                curr_neo_params['diameter'] = float(line['diameter'])
+
+            neos.append(NearEarthObject(**curr_neo_params))
+
+    return neos
 
 
-def load_approaches(cad_json_path):
+def load_approaches(cad_json_path) -> typing.List[CloseApproach]:
+    #TODO: Update for the new __init__ method of CloseApproach
     """Read close approach data from a JSON file.
 
     :param neo_csv_path: A path to a JSON file containing data about close approaches.
     :return: A collection of `CloseApproach`es.
     """
-    # TODO: Load close approach data from the given JSON file.
-    return ()
+    close_approaches = []
+    
+    with open(cad_json_path) as file:
+        reader = json.load(file)
+        field_to_index = {}
+        for i in range(len(reader['fields'])):
+            field_to_index[reader['fields'][i]] = i
+        print(field_to_index)
+
+        for obj_index in range(int(reader['count'])):
+            close_approaches.append(CloseApproach(designation=reader['data'][obj_index][field_to_index['des']],
+                                    cd_time=reader['data'][obj_index][field_to_index['cd']],
+                                    distance=float(reader['data'][obj_index][field_to_index['dist']]),
+                                    velocity=float(reader['data'][obj_index][field_to_index['v_rel']]))) 
+
+    return close_approaches
+
+
+if __name__ == "__main__":
+    load_approaches('I:\\NEOs\\data\\cad.json')

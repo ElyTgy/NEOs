@@ -93,18 +93,19 @@ class CloseApproach:
     `NEODatabase` constructor.
     """
 
-    def __init__(self, NEO:NearEarthObject, cd_time:str, distance:float, velocity:float):
+    #TODO: hold a refrence to NEO
+    def __init__(self, designation:str, cd_time:str, distance:float, velocity:float):
         """Create a new `CloseApproach`.
 
         :param designation: String representing .
         """
-        self._designation = NEO.designation
+        self._designation = designation
         self.time = cd_to_datetime(cd_time)
         self.distance = distance
         self.velocity = velocity
 
-        # Create an attribute for the referenced NEO, originally None.
-        self.neo = NEO
+        #TODO: Create an attribute for the referenced NEO, originally None.
+        self.neo = None
 
     @property
     def time_str(self):
@@ -118,11 +119,12 @@ class CloseApproach:
         return datetime_to_str(self.time)
 
     def __str__(self):
+        #TODO: Replace fullname
         """Return `str(self)`."""
-        return f"""On {self.time_str}, {self.neo.fullname} approached earth
+        return f"""On {self.time_str}, {self._designation}(replace with neo.fullname) approached earth
 at a distance of {self.distance:.2f} km and a velocity of {self.velocity} km/s"""
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return (f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, "
-                f"velocity={self.velocity:.2f}, neo={self.neo!r})")
+                f"velocity={self.velocity:.2f}, neo={self.designation!r})")
