@@ -3,8 +3,9 @@ import csv
 from models import NearEarthObject, CloseApproach
 import typing
 from math import isnan
+from os import getcwd
 
-#TODO: Refactor code in this file
+#TODO: Refactor code in this file and make funtions generators
 
 #class loader. Attributes: tuple of headers, load_csv, load_json static functions
 def load_neos(neo_csv_path) -> typing.List[NearEarthObject]:
@@ -26,9 +27,7 @@ def load_neos(neo_csv_path) -> typing.List[NearEarthObject]:
                 curr_neo_params['hazardous'] = True
             else:
                 curr_neo_params['hazardous'] = False
-        
-            #TODO: Change with a call to load_approaches
-            curr_neo_params['approaches'] = []
+
 
             if line['name'] != '':
                 curr_neo_params['name'] = line['name']
@@ -58,13 +57,27 @@ def load_approaches(cad_json_path) -> typing.List[CloseApproach]:
         print(field_to_index)
 
         for obj_index in range(int(reader['count'])):
-            close_approaches.append(CloseApproach(designation=reader['data'][obj_index][field_to_index['des']],
-                                    cd_time=reader['data'][obj_index][field_to_index['cd']],
-                                    distance=float(reader['data'][obj_index][field_to_index['dist']]),
-                                    velocity=float(reader['data'][obj_index][field_to_index['v_rel']]))) 
+            curr_query = reader['data'][obj_index]
+            close_approaches.append(CloseApproach(
+                                    designation=  curr_query[field_to_index['des']],
+                                    cd_time=      curr_query[field_to_index['cd']],
+                                    distance=float(curr_query[field_to_index['dist']]),
+                                    velocity=float(curr_query[field_to_index['v_rel']]))) 
 
     return close_approaches
 
+def approaches_count(cad_json_path) -> int:
+    """Number of close_approched listed in the json file
+
+    :param neo_csv_path: A path to a JSON file containing data about close approaches.
+    :return: Number of close approaches.
+    """
+    
+    with open(cad_json_path) as file:
+        reader = json.load(file)
+        return int(reader['count'])
+
 
 if __name__ == "__main__":
-    load_approaches('I:\\NEOs\\data\\cad.json')
+    n = approaches_count(getcwd()+'\\data\\cad.json')
+    print(n)

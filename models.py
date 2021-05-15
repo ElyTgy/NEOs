@@ -1,5 +1,6 @@
 from typing import List
 from math import isnan
+import datetime
 
 
 
@@ -12,13 +13,6 @@ for whether the object is potentially hazardous.
 The `CloseApproach` class represents a close approach to Earth by an NEO. Each
 has an approach datetime, a nominal approach distance, and a relative approach
 velocity.
-
-A `NearEarthObject` maintains a collection of its close approaches, and a
-`CloseApproach` maintains a reference to its NEO.
-
-The functions that construct these objects use information extracted from the
-data files from NASA, so these objects should be able to handle all of the
-quirks of the data set, such as missing names and unknown diameters.
 """
 from helpers import cd_to_datetime, datetime_to_str
 
@@ -36,8 +30,7 @@ class NearEarthObject:
     `NEODatabase` constructor.
     """
 
-    def __init__(self, designation:str, 
-                hazardous:bool, approaches:list, name:str=None, 
+    def __init__(self, designation:str, hazardous:bool, name:str=None, 
                 diameter:float=float('nan')):
         """Create a new `NearEarthObject`.
 
@@ -52,7 +45,8 @@ class NearEarthObject:
         self.name = name
         self.diameter = diameter
         self.hazardous = hazardous
-        self.approaches = approaches
+        
+        self.approaches = []
 
     @property
     def fullname(self) -> str:
@@ -93,7 +87,6 @@ class CloseApproach:
     `NEODatabase` constructor.
     """
 
-    #TODO: hold a refrence to NEO
     def __init__(self, designation:str, cd_time:str, distance:float, velocity:float):
         """Create a new `CloseApproach`.
 
@@ -104,7 +97,6 @@ class CloseApproach:
         self.distance = distance
         self.velocity = velocity
 
-        #TODO: Create an attribute for the referenced NEO, originally None.
         self.neo = None
 
     @property
@@ -119,12 +111,16 @@ class CloseApproach:
         return datetime_to_str(self.time)
 
     def __str__(self):
-        #TODO: Replace fullname
+
         """Return `str(self)`."""
-        return f"""On {self.time_str}, {self._designation}(replace with neo.fullname) approached earth
-at a distance of {self.distance:.2f} km and a velocity of {self.velocity} km/s"""
+        approach_time = "approached"
+        if datetime.datetime.now() < self.time:
+            approach_time = "will approach"
+
+        return f"""On {self.time_str}, {self.neo.fullname} approached earth
+at a distance of {self.distance:.2f} km and a velocity of {self.velocity:.2f} km/s"""
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return (f"CloseApproach(time={self.time_str!r}, distance={self.distance:.2f}, "
-                f"velocity={self.velocity:.2f}, neo={self.designation!r})")
+                f"velocity={self.velocity:.2f}, neo={self.neo!r})")
