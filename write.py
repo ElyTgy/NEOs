@@ -17,15 +17,37 @@ import json
 def write_to_csv(results, filename):
     """Write an iterable of `CloseApproach` objects to a CSV file.
 
-    The precise output specification is in `README.md`. Roughly, each output row
-    corresponds to the information in a single close approach from the `results`
-    stream and its associated near-Earth object.
-
     :param results: An iterable of `CloseApproach` objects.
     :param filename: A Path-like object pointing to where the data should be saved.
     """
-    fieldnames = ('datetime_utc', 'distance_au', 'velocity_km_s', 'designation', 'name', 'diameter_km', 'potentially_hazardous')
-    # TODO: Write the results to a CSV file, following the specification in the instructions.
+    fieldnames = ('datetime_utc', 'distance_au', 'velocity_km_s', 'designation', 
+    'name', 'diameter_km', 'potentially_hazardous')
+    
+    rows = []
+    for close_approach in results:
+        name = close_approach.neo.name
+        if close_approach.neo.name == None:
+            name = ''
+
+        name = close_approach.neo.name
+        if close_approach.neo.name == None:
+            name = ''
+        
+        curr_row = [
+            str(close_approach.time),
+            str(close_approach.distance),
+            str(close_approach.velocity),
+            str(close_approach._designation),
+            name,
+            str(close_approach.neo.diameter),
+            str(close_approach.neo.hazardous).capitalize()]
+        rows.append(curr_row)
+
+    with open(f"{filename}.csv", 'w') as file:
+        writer = csv.writer(file)
+        writer.writerow(fieldnames)
+        for row in rows:
+            writer.writerow(row)
 
 
 def write_to_json(results, filename):
@@ -40,3 +62,8 @@ def write_to_json(results, filename):
     :param filename: A Path-like object pointing to where the data should be saved.
     """
     # TODO: Write the results to a JSON file, following the specification in the instructions.
+
+
+if __name__ == '__main__':
+    var = str(float('nan'))
+    print("False".capitalize())

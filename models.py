@@ -69,7 +69,7 @@ class NearEarthObject:
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
-        return (f"NearEarthObject(designation={self.designation!r}, name={self.name!r}, "
+        return (f"NearEarthObject(designation={self.designation!r}, 'name={self.name!r}', "
                 f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})")
 
 
@@ -112,7 +112,7 @@ class CloseApproach:
 
     def __str__(self):
         """Return `str(self)`."""
-        
+
         approach_time = "approached"
         if datetime.datetime.now() < self.time:
             approach_time = "will approach"

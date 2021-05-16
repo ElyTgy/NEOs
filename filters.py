@@ -1,7 +1,8 @@
-
 import itertools
 
 
+
+#TODO: REMOVE FROM THIS FILE AFTER UNITTESTS PASS
 def limit(iterator, n=None):
     """Produce a limited stream of values from an iterator.
 
@@ -12,4 +13,3 @@ def limit(iterator, n=None):
     :yield: The first (at most) `n` values from the iterator.
     """
     return itertools.islice(iterator, n)
-

@@ -125,7 +125,7 @@ class NEODatabase:
             elif key[:3] == 'end':
                 if val == None:
                     args[key] = self.max_time.date()
-
+        
 
         #TODO: Save str fields of args somewhere as well (in a tuple of strings) as well as query keyword
         for approach in self._approaches:
@@ -141,11 +141,10 @@ class NEODatabase:
             if not (bt_floats(approach.velocity, float(args["velocity_min"])) and 
             lt_floats(approach.velocity, float(args["velocity_max"]))):
                 continue
+           
+            if args["date"] != None and approach.time.date() != args["date"]:
+                continue
 
-            if args["date"] != None:
-                if approach.time.date() != args["date"]:
-                    continue
-            
             if not (approach.time.date() > args["start_date"] and 
                 approach.time.date() <  args["end_date"]):
                     continue
@@ -153,9 +152,6 @@ class NEODatabase:
             if args["hazardous"] != None and approach.neo.hazardous != args["hazardous"]:
                 continue
      
+            #TODO: Remove print statement
+            print(approach)
             yield approach
-
-
-if __name__ == "__main__":
-    db = NEODatabase(load_neos(getcwd() + "\\data\\neos.csv"), load_approaches(getcwd() + "\\data\\cad.json"))
-    print(db.max_time)
