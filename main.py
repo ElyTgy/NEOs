@@ -46,7 +46,7 @@ import time
 
 from extract import load_neos, load_approaches
 from database import NEODatabase
-from filters import create_filters, limit
+from filters import limit
 from write import write_to_csv, write_to_json
 
 
@@ -207,15 +207,9 @@ def query(database, args):
     :param args: All arguments from the command line, as parsed by the top-level parser.
     """
     # Construct a collection of filters from arguments supplied at the command line.
-    filters = create_filters(
-        date=args.date, start_date=args.start_date, end_date=args.end_date,
-        distance_min=args.distance_min, distance_max=args.distance_max,
-        velocity_min=args.velocity_min, velocity_max=args.velocity_max,
-        diameter_min=args.diameter_min, diameter_max=args.diameter_max,
-        hazardous=args.hazardous
-    )
+    #filters = create_filters(args)
     # Query the database with the collection of filters.
-    results = database.query(filters)
+    results = database.query(vars(args))
 
     if not args.outfile:
         # Write the results to stdout, limiting to 10 entries if not specified.

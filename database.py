@@ -1,3 +1,5 @@
+import datetime
+from helpers import cd_to_datetime, bt_floats, lt_floats
 from typing import Union
 from extract import *
 
@@ -37,11 +39,12 @@ class NEODatabase:
                 print("skipped an approach")
                 continue
         
-        self._neos = set(des_to_neo.values())
-        self._approaches = set(approaches)
+        #TODO: Use sets
+        self._neos = des_to_neo.values()
+        self._approaches = approaches
             
 
-    def get_neo_by_designation(self, designation:str) -> typing.Union[None, NearEarthObject]:
+    def get_neo_by_designation(self, designation:str) -> Union[None, NearEarthObject]:
         """Find and return an NEO by its primary designation.
 
         If no match is found, return `None` instead.
@@ -76,7 +79,25 @@ class NEODatabase:
                 return neo            
         return None
 
-    def query(self, filters=()):
+    @property
+    def max_time(self):
+        """find the time of the asteroid furthest in the future in nasas database"""
+        max_date = self._approaches[0].time
+        for approach in self._approaches:
+            if approach.time > max_date:
+                max_date = approach.time 
+        return max_date
+
+    @property
+    def min_time(self):
+        """find the time of the earliest recorded asteroid in nasas database"""
+        min_date = self._approaches[0].time
+        for approach in self._approaches:
+            if approach.time < min_date:
+                min_date = approach.time 
+        return min_date
+
+    def query(self, args):
         """Query close approaches to generate those that match a collection of filters.
 
         This generates a stream of `CloseApproach` objects that match all of the
@@ -90,6 +111,51 @@ class NEODatabase:
         :param filters: A collection of filters capturing user-specified criteria.
         :return: A stream of matching `CloseApproach` objects.
         """
-        # TODO: Generate `CloseApproach` objects that match all of the filters.
+        #handle None values that havent been entered
+        for key, val in args.items():
+            if key[-3:] == 'min':
+                if val == None:
+                    args[key] = float('-inf')
+            elif key[-3:] == 'max':
+                if val == None:
+                    args[key] = float('inf')
+            elif key[:5] == 'start':
+                if val == None:
+                    args[key] = self.min_time.date()
+            elif key[:3] == 'end':
+                if val == None:
+                    args[key] = self.max_time.date()
+
+
+        #TODO: Save str fields of args somewhere as well (in a tuple of strings) as well as query keyword
         for approach in self._approaches:
+            
+            if not (bt_floats(approach.distance, float(args["distance_min"])) and 
+            lt_floats(approach.distance, float(args["distance_max"]))):
+                continue
+
+            if not (bt_floats(approach.neo.diameter, float(args["diameter_min"])) and 
+            lt_floats(approach.neo.diameter, float(args["diameter_max"]))):
+                continue
+
+            if not (bt_floats(approach.velocity, float(args["velocity_min"])) and 
+            lt_floats(approach.velocity, float(args["velocity_max"]))):
+                continue
+
+            if args["date"] != None:
+                if approach.time.date() != args["date"]:
+                    continue
+            
+            if not (approach.time.date() > args["start_date"] and 
+                approach.time.date() <  args["end_date"]):
+                    continue
+
+            if args["hazardous"] != None and approach.neo.hazardous != args["hazardous"]:
+                continue
+     
             yield approach
+
+
+if __name__ == "__main__":
+    db = NEODatabase(load_neos(getcwd() + "\\data\\neos.csv"), load_approaches(getcwd() + "\\data\\cad.json"))
+    print(db.max_time)

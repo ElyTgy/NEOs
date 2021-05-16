@@ -1,16 +1,6 @@
-"""Convert datetimes to and from strings.
-
-NASA's dataset provides timestamps as naive datetimes (corresponding to UTC).
-
-The `cd_to_datetime` function converts a string, formatted as the `cd` field of
-NASA's close approach data, into a Python `datetime`
-
-The `datetime_to_str` function converts a Python `datetime` into a string.
-Although `datetime`s already have human-readable string representations, those
-representations display seconds, but NASA's data (and our datetimes!) don't
-provide that level of resolution, so the output format also will not.
-"""
 import datetime
+from math import isclose
+
 
 
 def cd_to_datetime(calendar_date):
@@ -42,3 +32,18 @@ def datetime_to_str(dt):
     :return: That datetime, as a human-readable string without seconds.
     """
     return datetime.datetime.strftime(dt, "%Y-%m-%d %H:%M")
+
+#ex: 2.57 and 2.56 will be considered the same
+def eq_floats(f1, f2, tol=0.01):
+    """True if f1 and f2 are both nearly equal"""
+    return isclose(f1, f2, rel_tol=tol, abs_tol=tol)
+
+
+def lt_floats(f1, f2, tol=0.01):
+    """True if f1 is approxiamtly smaller than f2"""
+    return f1 < f2 and not eq_floats(f1, f2, tol)
+
+
+def bt_floats(f1, f2, tol=0.01):
+    """True if f1 is approxiamtly larger than f2"""
+    return f1 > f2 and not eq_floats(f1, f2, tol)      

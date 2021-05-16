@@ -28,7 +28,6 @@ def load_neos(neo_csv_path) -> typing.List[NearEarthObject]:
             else:
                 curr_neo_params['hazardous'] = False
 
-
             if line['name'] != '':
                 curr_neo_params['name'] = line['name']
 
@@ -54,7 +53,6 @@ def load_approaches(cad_json_path) -> typing.List[CloseApproach]:
         field_to_index = {}
         for i in range(len(reader['fields'])):
             field_to_index[reader['fields'][i]] = i
-        print(field_to_index)
 
         for obj_index in range(int(reader['count'])):
             curr_query = reader['data'][obj_index]

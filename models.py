@@ -111,13 +111,13 @@ class CloseApproach:
         return datetime_to_str(self.time)
 
     def __str__(self):
-
         """Return `str(self)`."""
+        
         approach_time = "approached"
         if datetime.datetime.now() < self.time:
             approach_time = "will approach"
 
-        return f"""On {self.time_str}, {self.neo.fullname} approached earth
+        return f"""On {self.time_str}, {self.neo.fullname} {approach_time} earth
 at a distance of {self.distance:.2f} km and a velocity of {self.velocity:.2f} km/s"""
 
     def __repr__(self):
