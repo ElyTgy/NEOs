@@ -5,9 +5,8 @@ import typing
 from math import isnan
 from os import getcwd
 
-#TODO: Refactor code in this file and make funtions generators
 
-#class loader. Attributes: tuple of headers, load_csv, load_json static functions
+
 def load_neos(neo_csv_path) -> typing.List[NearEarthObject]:
     """Read near-Earth object information from a CSV file.
 
@@ -40,7 +39,6 @@ def load_neos(neo_csv_path) -> typing.List[NearEarthObject]:
 
 
 def load_approaches(cad_json_path) -> typing.List[CloseApproach]:
-    #TODO: Update for the new __init__ method of CloseApproach
     """Read close approach data from a JSON file.
 
     :param neo_csv_path: A path to a JSON file containing data about close approaches.

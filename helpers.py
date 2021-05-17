@@ -33,9 +33,10 @@ def datetime_to_str(dt):
     """
     return datetime.datetime.strftime(dt, "%Y-%m-%d %H:%M")
 
-#ex: 2.57 and 2.56 will be considered the same
+
 def eq_floats(f1, f2, tol=0.01):
-    """True if f1 and f2 are both nearly equal"""
+    """True if f1 and f2 are both nearly equal
+    example: 2.57 and 2.56 will be considered the same"""
     return isclose(f1, f2, rel_tol=tol, abs_tol=tol)
 
 

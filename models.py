@@ -48,6 +48,7 @@ class NearEarthObject:
         
         self.approaches = []
 
+
     @property
     def fullname(self) -> str:
         """Return a representation of the full name of this NEO."""
@@ -55,6 +56,7 @@ class NearEarthObject:
         if(self.name):
             rv = f"{rv} ({self.name})"
         return rv
+
 
     def __str__(self):
         """Return `str(self)`."""
@@ -67,10 +69,12 @@ class NearEarthObject:
         rv += "potentially hazardous."
         return rv
 
+
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""
         return (f"NearEarthObject(designation={self.designation!r}, 'name={self.name!r}', "
                 f"diameter={self.diameter:.3f}, hazardous={self.hazardous!r})")
+
 
 
 class CloseApproach:
@@ -99,6 +103,7 @@ class CloseApproach:
 
         self.neo = None
 
+
     @property
     def time_str(self):
         """Return a formatted representation of this `CloseApproach`'s approach time.
@@ -110,6 +115,7 @@ class CloseApproach:
         """
         return datetime_to_str(self.time)
 
+
     def __str__(self):
         """Return `str(self)`."""
 
@@ -117,8 +123,9 @@ class CloseApproach:
         if datetime.datetime.now() < self.time:
             approach_time = "will approach"
 
-        return f"""On {self.time_str}, {self.neo.fullname} {approach_time} earth
-at a distance of {self.distance:.2f} km and a velocity of {self.velocity:.2f} km/s"""
+        return( f"On {self.time_str}, {self.neo.fullname} {approach_time} earth, "
+        f"at a distance of {self.distance:.2f} km and a velocity of {self.velocity:.2f} km/s")
+
 
     def __repr__(self):
         """Return `repr(self)`, a computer-readable string representation of this object."""

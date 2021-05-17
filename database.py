@@ -1,7 +1,7 @@
 import datetime
-from helpers import cd_to_datetime, bt_floats, lt_floats
 from typing import Union
 from extract import *
+import filters
 
 
 
@@ -39,7 +39,6 @@ class NEODatabase:
                 print("skipped an approach")
                 continue
         
-        #TODO: Use sets
         self._neos = des_to_neo.values()
         self._approaches = approaches
             
@@ -61,6 +60,7 @@ class NEODatabase:
                 return neo            
         return None
 
+
     def get_neo_by_name(self, name):
         """Find and return an NEO by its name.
 
@@ -79,6 +79,7 @@ class NEODatabase:
                 return neo            
         return None
 
+
     @property
     def max_time(self):
         """find the time of the asteroid furthest in the future in nasas database"""
@@ -87,6 +88,7 @@ class NEODatabase:
             if approach.time > max_date:
                 max_date = approach.time 
         return max_date
+
 
     @property
     def min_time(self):
@@ -97,6 +99,7 @@ class NEODatabase:
                 min_date = approach.time 
         return min_date
 
+
     def query(self, args):
         """Query close approaches to generate those that match a collection of filters.
 
@@ -105,53 +108,12 @@ class NEODatabase:
 
         If no arguments are provided, generate all known close approaches.
 
-        The `CloseApproach` objects are generated in internal order, which isn't
-        guaranteed to be sorted meaninfully, although is often sorted by time.
-
-        :param filters: A collection of filters capturing user-specified criteria.
+        :param filters: A dictioanary of filters capturing user-specified criteria.
         :return: A stream of matching `CloseApproach` objects.
         """
-        #handle None values that havent been entered
-        for key, val in args.items():
-            if key[-3:] == 'min':
-                if val == None:
-                    args[key] = float('-inf')
-            elif key[-3:] == 'max':
-                if val == None:
-                    args[key] = float('inf')
-            elif key[:5] == 'start':
-                if val == None:
-                    args[key] = self.min_time.date()
-            elif key[:3] == 'end':
-                if val == None:
-                    args[key] = self.max_time.date()
         
-
-        #TODO: Save str fields of args somewhere as well (in a tuple of strings) as well as query keyword
+        args = filters.clean_args_dict(args, self.min_time.date(), self.max_time.date())
         for approach in self._approaches:
             
-            if not (bt_floats(approach.distance, float(args["distance_min"])) and 
-            lt_floats(approach.distance, float(args["distance_max"]))):
-                continue
-
-            if not (bt_floats(approach.neo.diameter, float(args["diameter_min"])) and 
-            lt_floats(approach.neo.diameter, float(args["diameter_max"]))):
-                continue
-
-            if not (bt_floats(approach.velocity, float(args["velocity_min"])) and 
-            lt_floats(approach.velocity, float(args["velocity_max"]))):
-                continue
-           
-            if args["date"] != None and approach.time.date() != args["date"]:
-                continue
-
-            if not (approach.time.date() > args["start_date"] and 
-                approach.time.date() <  args["end_date"]):
-                    continue
-
-            if args["hazardous"] != None and approach.neo.hazardous != args["hazardous"]:
-                continue
-     
-            #TODO: Remove print statement
-            print(approach)
-            yield approach
+            if filters.is_valid_close_approach(approach, args):
+                yield approach

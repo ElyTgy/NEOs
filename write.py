@@ -2,6 +2,8 @@ import csv
 import json
 from helpers import datetime_to_str
 
+
+
 FIELD_NAMES = ('datetime_utc', 'distance_au', 'velocity_km_s', 'designation', 
     'name', 'diameter_km', 'potentially_hazardous')
 
@@ -64,8 +66,3 @@ def write_to_json(results, filename):
 
     with open(f"{filename}.json", 'w') as file:
         json.dump(objs, fp=file)
-
-
-if __name__ == '__main__':
-    var = str(float('nan'))
-    print("False".capitalize())
