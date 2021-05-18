@@ -46,7 +46,7 @@ class NearEarthObject:
         self.diameter = diameter
         self.hazardous = hazardous
         
-        self.approaches = []
+        self.approaches:List[CloseApproach] = []
 
 
     @property
