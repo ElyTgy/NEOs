@@ -8,7 +8,7 @@ based on their [characteristics](https://cneos.jpl.nasa.gov/glossary/PHA.html) a
 
 ### Commands:
 * Positional arguments:
-    * `query`: Shows asteroid that match certain criteria defined by the user such as. The parameters that aren'y defined will be ignored:
+    * `query`: Shows asteroid that match certain criteria defined by the user such as. The parameters that aren't defined will be ignored:
         * `--min-distance`: minimum distance between earth and asteroids
         * `--max-distance`:maximum distance between earth and asteroids
         * `--min-velocity`: minimum velocity of asteroids
