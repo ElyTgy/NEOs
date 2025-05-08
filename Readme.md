@@ -15,6 +15,8 @@ based on their [characteristics](https://cneos.jpl.nasa.gov/glossary/PHA.html) a
         * `--max-velocity`: minimum velocity of asteroids
         * `--max-diameter`: maximum diameter of the asteroid
         * `--min-diameter`: minimum diameter of the asteroid
+        * `--start-date`: asteroids that pass earth after this date
+        * `--end-date`: asteroids that pass earth before this date
         * `--hazardous`: asteroids that are recognized as hazardous
         * `--not-hazardous`: asteroids that are recognized as hazardous
     * `inspect`: Specifically look for an asteroid by looking at its name or database id:
